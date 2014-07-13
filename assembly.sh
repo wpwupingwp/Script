@@ -1,7 +1,14 @@
-rename 's/\.fasta//' ./*.fasta
+#rename 's/\.fasta//' ./*.fasta
+cd assembly
+for x in `ls`
+do
+    mv -f  $x `echo $x |sed 's/\.fasta//'`
+done
+
 for a in *
 do
-    runAssembly -o $a"_" -p $a
+    #runAssembly -o $a"_" -p $a
+    /home/zhangxian/chun/lichanghao/CT/wp/work/454/bin/runAssembly -o $a"_" -p $a
     echo '1'
 done
 rm -rf assembly.sh_
