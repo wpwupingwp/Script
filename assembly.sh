@@ -1,10 +1,11 @@
 rename 's/\.fasta//' ./*.fasta
 for a in *
 do
-    #runAssembly -o $a"_" -p $a
+    runAssembly -o $a"_" -p $a
     echo '1'
 done
 rm -rf assembly.sh_
+rm -rf statis.xls
 for d in *
 do
     if [ -d "$d" ]
