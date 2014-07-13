@@ -4,7 +4,7 @@ do
     #runAssembly -o $a"_" -p $a
     echo '1'
 done
-
+rm -rf assembly.sh_
 for d in *
 do
     if [ -d "$d" ]
