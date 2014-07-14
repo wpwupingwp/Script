@@ -52,9 +52,10 @@ do
 done
 cd all
 cat *.fna >all.fna
+cat *qual>all.qual
 cp all.fna ../../"$area"in.fasta
-cp all.fna ../../result.fna
-cat *qual >../../all.qual
+cp all.fna ../../../result.fna
+cp all.qual ../../../result.qual
 cd ..
 cd ..
 
@@ -85,5 +86,5 @@ done
 
 cat *>../result.fna
 cd ..
-python3 addname.py all.fna all.qual
+python addname.py result.fna result.qual
 
