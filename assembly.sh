@@ -5,16 +5,22 @@
 #PBS -V
 #PBS -S /bin/bash
 
-area=9
-workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
-four54="$workdir"/454/bin
-$pldir=$workdir/
+#area=9
+#workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
+#four54="$workdir"/454/bin
+#$pldir=$workdir/
+area=5
+workdir=/tmp/work
+four54=/opt/454/bin
 
+echo 'Depend on : maindb primer_list.txt list raw.fasta .pl ' 
 #devideraw
 cd $workdir
+mkdir "$area"
+cp ./* "$area"/
 cd $area
-perl "$pldir"/devideraw.pl "$area".fasta primer_list.xt
-mv "$area".fasta_cp_regions assembly
+perl devideraw.pl "$area".fasta primer_list.txt
+mv "$area"_cp_regions assembly
 
 #Rename
 cd assembly
@@ -26,13 +32,13 @@ done
 #Assembly
 for a in *
 do
+    sed -i 's/>/>'"$d"'/' 454AllContigs.fna
     $four54/runAssembly -o "$a"_ -p $a
 done
 
 #Add primer name
-rm -rf assembly.sh_
 mkdir all
-for d in *
+for d in `ls`
 do
     if [ -d "$d" ]
     then
@@ -44,14 +50,16 @@ do
         cd ..
     fi
 done
-cd ../all
-cat *fna >all.fna
-cp all.fna ../"$area"in.fasta
-cat *qual >../all.qual
+cd all
+cat *.fna >all.fna
+cp all.fna ../../"$area"in.fasta
+cp all.fna ../../result.fna
+cat *qual >../../all.qual
+cd ..
 cd ..
 
 #Makedb
-perl "$pldir"/devidedb.pl maindb list"$area"
+perl devidedb.pl maindb list"$area" >log
 mv maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
@@ -59,7 +67,7 @@ makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 blastn -db db"$area" -task megablast -use_index false -evalue 1e-05 -max_target_seqs 10 -num_threads 16 -outfmt "7 sseqid bitscore score length qcovs evalue pident" -query "$area"in.fasta -out "$area"Bout
 
 #Devidefasta
-perl "$pldir"/devidefasta.pl "$area"in.fasta "$area"Bout
+perl devidefasta.pl "$area"in.fasta "$area"Bout
 mv "$area"in.fasta_order devide
 
 #Rename
@@ -72,29 +80,10 @@ done
 #Add name info
 for y in `ls`
 do
-    sed -i 's/\>/\>'"$y"'_/' $y
+    sed -i 's/>/>'"$y"'_/' $y
 done
 
 cat *>../result.fna
 cd ..
-cp all.qual result.qual
-python addname.py result.qual result.fna
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+python3 addname.py all.fna all.qual
 
