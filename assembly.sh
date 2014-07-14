@@ -19,7 +19,7 @@ cd $workdir
 mkdir "$area"
 cp ./* "$area"/
 cd $area
-perl devideraw.pl "$area".fasta primer_list.txt
+perl devideraw.pl "$area".fasta primer_list.txt >log1
 mv "$area"_cp_regions assembly
 
 #Rename
@@ -33,7 +33,7 @@ done
 for a in *
 do
     sed -i 's/>/>'"$d"'/' 454AllContigs.fna
-    $four54/runAssembly -o "$a"_ -p $a
+    $four54/runAssembly -o "$a"- -p $a
 done
 
 #Add primer name
@@ -54,13 +54,12 @@ cd all
 cat *.fna >all.fna
 cat *qual>all.qual
 cp all.fna ../../"$area"in.fasta
-cp all.fna ../../../result.fna
-cp all.qual ../../../result.qual
+cp all.qual ../../result.qual
 cd ..
 cd ..
 
 #Makedb
-perl devidedb.pl maindb list"$area" >log
+perl devidedb.pl maindb list"$area" >log2
 mv maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
@@ -68,7 +67,7 @@ makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 blastn -db db"$area" -task megablast -use_index false -evalue 1e-05 -max_target_seqs 10 -num_threads 16 -outfmt "7 sseqid bitscore score length qcovs evalue pident" -query "$area"in.fasta -out "$area"Bout
 
 #Devidefasta
-perl devidefasta.pl "$area"in.fasta "$area"Bout
+perl devidefasta.pl "$area"in.fasta "$area"Bout>log3
 mv "$area"in.fasta_order devide
 
 #Rename
@@ -77,11 +76,12 @@ for x in `ls`
 do
     mv -f  $x `echo $x |sed 's/\.fasta//'`
 done
+mv Statis.xls ../
 
 #Add name info
 for y in `ls`
 do
-    sed -i 's/>/>'"$y"'_/' $y
+    sed -i 's/>/>'"$y"'-/' $y
 done
 
 cat *>../result.fna
