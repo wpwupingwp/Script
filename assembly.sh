@@ -1,23 +1,25 @@
 #PBS -N 454work
-#PBS -l nodes=2:ppn=16
+#PBS -l nodes=1:ppn=16
 #PBS -l walltime=240:00:00
 #PBS -q batch   
 #PBS -V
 #PBS -S /bin/bash
 
-#area=9
-#workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
-#four54="$workdir"/454/bin
-#$pldir=$workdir/
 area=5
-workdir=/tmp/work
-four54=/opt/454/bin
+workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
+four54="$workdir"/454/bin
+#$pldir=$workdir/
 
 echo 'Depend on : maindb primer_list.txt list raw.fasta .pl ' 
 #devideraw
 cd $workdir
 mkdir "$area"
-cp ./* "$area"/
+cp "$area".fasta "$area"/
+cp maindb "$area"/
+cp devide* "$area"/
+cp primer_list.txt "$area"/
+cp list"$area" "$area"/
+cp addname.py "$area"/
 cd $area
 perl devideraw.pl "$area".fasta primer_list.txt >log1
 mv "$area"_cp_regions assembly
