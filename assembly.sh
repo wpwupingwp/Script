@@ -34,7 +34,6 @@ done
 #Assembly
 for a in *
 do
-    sed -i 's/>/>'"$d"'/' 454AllContigs.fna
     $four54/runAssembly -o "$a"- -p $a
 done
 
@@ -62,11 +61,13 @@ cd ..
 
 #Makedb
 perl devidedb.pl maindb list"$area" >log2
+rm maindb
 mv maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
 #Blast
 blastn -db db"$area" -task megablast -use_index false -evalue 1e-05 -max_target_seqs 10 -num_threads 16 -outfmt "7 sseqid bitscore score length qcovs evalue pident" -query "$area"in.fasta -out "$area"Bout
+rm db*
 
 #Devidefasta
 perl devidefasta.pl "$area"in.fasta "$area"Bout>log3
@@ -88,5 +89,10 @@ done
 
 cat *>../result.fna
 cd ..
-python addname.py result.fna result.qual
+#python addname.py result.fna result.qual
+cd $workdir
+cd $area
+cd assembly
+cd all
+cp all.qual ../../result.qual
 
