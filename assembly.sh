@@ -5,7 +5,7 @@
 #PBS -V
 #PBS -S /bin/bash
 
-area=5
+area=1
 workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
 four54="$workdir"/454/bin
 #$pldir=$workdir/
@@ -14,15 +14,15 @@ echo 'Depend on : maindb primer_list.txt list raw.fasta .pl '
 #devideraw
 cd $workdir
 mkdir "$area"
-cp "$area".fasta "$area"/
+cp "$area"-trim.fasta "$area"/
 cp maindb "$area"/
 cp devide* "$area"/
 cp primer_list.txt "$area"/
 cp list"$area" "$area"/
 cp addname.py "$area"/
 cd $area
-perl devideraw.pl "$area".fasta primer_list.txt >log1
-mv "$area"_cp_regions assembly
+perl devideraw.pl "$area"-trim.fasta primer_list.txt >log1
+mv "$area"-trim_cp_regions assembly
 
 #Rename
 cd assembly
@@ -95,4 +95,8 @@ cd $area
 cd assembly
 cd all
 cp all.qual ../../result.qual
+cd ..
+cd ..
+cp result.fna ../result/"$area".fna
+cp result.qual ../result/"$area".qual
 
