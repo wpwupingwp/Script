@@ -1,6 +1,0 @@
-wget
-tar -zxvf 
-sed 's/\t//g'
-awk print 1 2
-awk print 1 3
-
