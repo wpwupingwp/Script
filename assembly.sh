@@ -14,14 +14,14 @@ echo 'Depend on : maindb primer_list.txt list raw.fasta .pl usearch'
 #devideraw
 cd $workdir
 mkdir "$area"
-cp "$area"-trim.fasta "$area"/
+cp "$area".fasta "$area"/
 cp maindb "$area"/
 cp devide* "$area"/
 cp primer_list.txt "$area"/
 cp list"$area" "$area"/
 cd $area
-perl devideraw.pl "$area"-trim.fasta primer_list.txt >log1
-mv "$area"-trim_cp_regions assembly
+perl devideraw.pl "$area".fasta primer_list.txt >log1
+mv "$area"_cp_regions assembly
 
 #Rename
 cd assembly
