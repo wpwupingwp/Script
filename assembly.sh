@@ -10,7 +10,7 @@ workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
 four54="$workdir"/454/bin
 #$pldir=$workdir/
 
-echo 'Depend on : maindb primer_list.txt list raw.fasta .pl ' 
+echo 'Depend on : maindb primer_list.txt list raw.fasta .pl usearch' 
 #devideraw
 cd $workdir
 mkdir "$area"
@@ -19,17 +19,19 @@ cp maindb "$area"/
 cp devide* "$area"/
 cp primer_list.txt "$area"/
 cp list"$area" "$area"/
-cp addname.py "$area"/
 cd $area
 perl devideraw.pl "$area"-trim.fasta primer_list.txt >log1
 mv "$area"-trim_cp_regions assembly
 
 #Rename
 cd assembly
-for x in `ls`
+for x in `seq -w 139`
 do
-    mv -f  $x `echo $x |sed 's/\.fasta//'`
+    usearch -cluster_fast cp"$x" -id 1.0 -centroids "$x" --log "$x".log
 done
+cat *.log >../usearch.log
+rm *.log
+rm *.fasta
 
 #Assembly
 for a in *
