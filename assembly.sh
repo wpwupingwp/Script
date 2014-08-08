@@ -17,6 +17,7 @@ mkdir "$area"
 cp "$area".fasta "$area"/
 cp maindb "$area"/
 cp devide* "$area"/
+cp usearch "$area"/
 cp primer_list.txt "$area"/
 cp list"$area" "$area"/
 cd $area
@@ -27,7 +28,7 @@ mv "$area"_cp_regions assembly
 cd assembly
 for x in `seq -w 139`
 do
-    usearch -cluster_fast cp"$x" -id 1.0 -centroids "$x" --log "$x".log
+    ../usearch -cluster_fast cp"$x" -id 1.0 -centroids "$x" --log "$x".log
 done
 cat *.log >../usearch.log
 rm *.log
