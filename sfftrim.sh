@@ -9,7 +9,7 @@ do
     do
         python3 -c "import sys;from Bio import SeqIO;SeqIO.convert(sys.argv[1],'sff-trim',str(sys.argv[1]).replace('.sff','.fastq'),'fastq');" $m
     done
-    cat *.fasta>../../sff-trim/"$i".fasta
+    cat *.fastq>../../sff-trim/"$i".fastq
     cd ..
 done
 
