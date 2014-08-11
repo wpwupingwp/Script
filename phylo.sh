@@ -1,6 +1,4 @@
 #!/bin/bash
-#wpwupingwp@outlook.com
-#2014-01-19
 mv *.fasta 01.fasta
 sed -i 's/ /_/g' 01.fasta
 mkdir 02_cluster
