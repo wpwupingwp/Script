@@ -19,20 +19,20 @@ mkdir assembly
 python3 ../devideraw.py ../"$area".fastq ../primer.fasta
 mv cp* assembly/
 
-#Rename
+#Merge
 cd assembly
-for x in `seq -w 139`
+for x in `ls`
 do
-    ../../usearch -cluster_fast cp"$x" -id 1.0 -centroids "$x" --log "$x".log
+    python3 -c "from Bio import SeqIO;SeqIO.convert(sys.argv[1],'fastq',''.join([sys.argv[1],'.fasta']),'fasta)" $x
+    ../../usearch -cluster_fast "$x".fasta -id 1.0 -centroids "$x"-merge.fasta --log "$x".log
 done
 cat *.log >../usearch.log
 rm *.log
-rm *.fasta
 
 #Assembly
-for a in *
+for a in `seq -w 139`
 do
-    $four54/runAssembly -o "$a"- -p $a
+    $four54/runAssembly -o "$a" -p cp"$a"
 done
 
 #Add primer name
@@ -44,14 +44,16 @@ do
         cd $d
         sed -i 's/>/>'"$d"'/' 454AllContigs.fna
         sed -i 's/>/>'"$d"'/' 454AllContigs.qual
-        cp 454AllContigs.fna ../all/"$d".fna
-        cp 454AllContigs.qual ../all/"$d".qual
+#        cp 454AllContigs.fna ../all/"$d".fna
+        cat 454AllContigs.fna >> ../all.fna
+        cat 454AllContigs.qual >> ../all.qual
+#        cp 454AllContigs.qual ../all/"$d".qual
         cd ..
     fi
 done
-cd all
-cat *.fna >all.fna
-cat *qual>all.qual
+#cd all
+#cat *.fna >all.fna
+#cat *qual>all.qual
 cp all.fna ../../"$area"in.fasta
 cp all.qual ../../result.qual
 cd ..
@@ -90,4 +92,4 @@ python3 addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
 cp result.qual ../result/"$area".qual
 python3 table.py result.fna list"$area"
-cp *.csv ../sum/
+c *.csv ../sum/
