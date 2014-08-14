@@ -11,13 +11,12 @@ workdir=/tmp/work
 four54=/usr/bin
 #four54="$workdir"/454/bin
 
-echo 'Depend on : maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl usearch' 
+echo 'Depend on : maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl devidedb.pl usearch' 
 #devideraw
 cd $workdir
 mkdir "$area"
 #cp devide* "$area"/
 cd $area
-cp ../devideraw.py ./
 cp ../primer.* ./
 python3 devideraw.py ../"$area".fastq primer.fasta
 mkdir assembly
@@ -47,10 +46,8 @@ do
         cd $d
         sed -i 's/>/>'"$d"'-/' 454AllContigs.fna
         sed -i 's/>/>'"$d"'-/' 454AllContigs.qual
-#        cp 454AllContigs.fna ../all/"$d".fna
         cat 454AllContigs.fna > ../all.fna
         cat 454AllContigs.qual > ../all.qual
-#        cp 454AllContigs.qual ../all/"$d".qual
         cd ..
     fi
 done
@@ -59,16 +56,15 @@ cp all.qual ../result.qual
 cd ..
 
 #Makedb
-perl devidedb.pl ../maindb ../list"$area" >devidedb.log
-mv maindb.Order.Extracted.fas db"$area"
+perl ../devidedb.pl ../maindb ../list"$area" > devidedb.log
+mv ../maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
 #Blast
 blastn -db db"$area" -task megablast -use_index false -evalue 1e-05 -max_target_seqs 10 -num_threads 16 -outfmt "7 sseqid bitscore score length qcovs evalue pident" -query "$area"in.fasta -out "$area"Bout
-rm db*
 
 #Devidefasta
-perl ../devidefasta.pl "$area"in.fasta "$area"Bout>-log3
+perl ../devidefasta.pl "$area"in.fasta "$area"Bout > devidefasta.log
 mv "$area"in.fasta_order devide
 
 #Rename
