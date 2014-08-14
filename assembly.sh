@@ -11,7 +11,7 @@ workdir=/tmp/work
 four54=/usr/bin
 #four54="$workdir"/454/bin
 
-echo 'Depend on : maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl devidedb.pl usearch' 
+echo 'Depend on : result/ sum/ maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl devidedb.pl usearch' 
 #devideraw
 cd $workdir
 mkdir "$area"
