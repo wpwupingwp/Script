@@ -22,7 +22,6 @@ python3 ../devideraw.py ../"$area".fastq primer.fasta
 mkdir assembly
 mv cp* assembly/
 
-exit 0
 #Merge
 cd assembly
 for x in *
@@ -34,7 +33,7 @@ cat *.log > ../usearch.log
 rm *.log
 
 #Assembly
-for a in `seq -w 139`
+for a in `seq -w 140`
 do
     $four54/runAssembly -o "$a" -p cp"$a"
 done
@@ -47,8 +46,8 @@ do
         cd $d
         sed -i 's/>/>'"$d"'-/' 454AllContigs.fna
         sed -i 's/>/>'"$d"'-/' 454AllContigs.qual
-        cat 454AllContigs.fna > ../all.fna
-        cat 454AllContigs.qual > ../all.qual
+        cat 454AllContigs.fna >> ../all.fna
+        cat 454AllContigs.qual >> ../all.qual
         cd ..
     fi
 done
@@ -79,13 +78,13 @@ mv Statis.xls ../
 #Add name info
 for y in `ls`
 do
-    sed -i 's/>-/>'"$y"'-/' $y
+    sed -i 's/>/>'"$y"'-/' $y
 done
 
-cat *>-../result.fna
+cat * > ../result.fna
 cd ..
-python3 addname.py result.fna result.qual
+python3 ../addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
 cp result.qual ../result/"$area".qual
-python3 table.py result.fna list"$area"
-c *.csv ../sum/
+python3 ../table.py result.fna ../list"$area"
+cp *.csv ../sum/
