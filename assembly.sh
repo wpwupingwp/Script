@@ -6,27 +6,31 @@
 #PBS -S /bin/bash
 
 area=1
-workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
-four54="$workdir"/454/bin
+#workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
+workdir=/tmp/work
+four54=/usr/bin
+#four54="$workdir"/454/bin
 
-echo 'Depend on : maindb addname.py primer.fasta list raw-trim.fastq .pl usearch' 
+echo 'Depend on : maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl usearch' 
 #devideraw
 cd $workdir
 mkdir "$area"
-cp devide* "$area"/
+#cp devide* "$area"/
 cd $area
+cp ../devideraw.py ./
+cp ../primer.* ./
+python3 devideraw.py ../"$area".fastq primer.fasta
 mkdir assembly
-python3 ../devideraw.py ../"$area".fastq ../primer.fasta
 mv cp* assembly/
 
 #Merge
 cd assembly
-for x in `ls`
+for x in *
 do
-    python3 -c "from Bio import SeqIO;SeqIO.convert(sys.argv[1],'fastq',''.join([sys.argv[1],'.fasta']),'fasta)" $x
+    python3 -c "import sys;from Bio import SeqIO;SeqIO.convert(sys.argv[1],'fastq',''.join([sys.argv[1],'.fasta']),'fasta')" $x
     ../../usearch -cluster_fast "$x".fasta -id 1.0 -centroids "$x"-merge.fasta --log "$x".log
 done
-cat *.log >../usearch.log
+cat *.log >assembly.sh-../usearch.log
 rm *.log
 
 #Assembly
@@ -42,25 +46,25 @@ do
     if [ -d "$d" ]
     then
         cd $d
-        sed -i 's/>/>'"$d"'/' 454AllContigs.fna
-        sed -i 's/>/>'"$d"'/' 454AllContigs.qual
+        sed -i 's/>assembly.sh-/>'"$d"'/' 454AllContigs.fna
+        sed -i 's/>assembly.sh-/>'"$d"'/' 454AllContigs.qual
 #        cp 454AllContigs.fna ../all/"$d".fna
-        cat 454AllContigs.fna >> ../all.fna
-        cat 454AllContigs.qual >> ../all.qual
+        cat 454AllContigs.fna >assembly.sh-> ../all.fna
+        cat 454AllContigs.qual >assembly.sh-> ../all.qual
 #        cp 454AllContigs.qual ../all/"$d".qual
         cd ..
     fi
 done
 #cd all
-#cat *.fna >all.fna
-#cat *qual>all.qual
+#cat *.fna >assembly.sh-all.fna
+#cat *qual>assembly.sh-all.qual
 cp all.fna ../../"$area"in.fasta
 cp all.qual ../../result.qual
 cd ..
 cd ..
 
 #Makedb
-perl devidedb.pl ../maindb ../list"$area" >log2
+perl devidedb.pl ../maindb ../list"$area" >assembly.sh-log2
 mv maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
@@ -69,7 +73,7 @@ blastn -db db"$area" -task megablast -use_index false -evalue 1e-05 -max_target_
 rm db*
 
 #Devidefasta
-perl devidefasta.pl "$area"in.fasta "$area"Bout>log3
+perl ../devidefasta.pl "$area"in.fasta "$area"Bout>assembly.sh-log3
 mv "$area"in.fasta_order devide
 
 #Rename
@@ -83,10 +87,10 @@ mv Statis.xls ../
 #Add name info
 for y in `ls`
 do
-    sed -i 's/>/>'"$y"'-/' $y
+    sed -i 's/>assembly.sh-/>'"$y"'-/' $y
 done
 
-cat *>../result.fna
+cat *>assembly.sh-../result.fna
 cd ..
 python3 addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
