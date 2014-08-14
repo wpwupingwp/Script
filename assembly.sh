@@ -18,10 +18,11 @@ mkdir "$area"
 #cp devide* "$area"/
 cd $area
 cp ../primer.* ./
-python3 devideraw.py ../"$area".fastq primer.fasta
+python3 ../devideraw.py ../"$area".fastq primer.fasta
 mkdir assembly
 mv cp* assembly/
 
+exit 0
 #Merge
 cd assembly
 for x in *
