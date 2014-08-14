@@ -30,7 +30,7 @@ do
     python3 -c "import sys;from Bio import SeqIO;SeqIO.convert(sys.argv[1],'fastq',''.join([sys.argv[1],'.fasta']),'fasta')" $x
     ../../usearch -cluster_fast "$x".fasta -id 1.0 -centroids "$x"-merge.fasta --log "$x".log
 done
-cat *.log >assembly.sh-../usearch.log
+cat *.log > ../usearch.log
 rm *.log
 
 #Assembly
@@ -40,31 +40,26 @@ do
 done
 
 #Add primer name
-mkdir all
 for d in `ls`
 do
     if [ -d "$d" ]
     then
         cd $d
-        sed -i 's/>assembly.sh-/>'"$d"'/' 454AllContigs.fna
-        sed -i 's/>assembly.sh-/>'"$d"'/' 454AllContigs.qual
+        sed -i 's/>/>'"$d"'-/' 454AllContigs.fna
+        sed -i 's/>/>'"$d"'-/' 454AllContigs.qual
 #        cp 454AllContigs.fna ../all/"$d".fna
-        cat 454AllContigs.fna >assembly.sh-> ../all.fna
-        cat 454AllContigs.qual >assembly.sh-> ../all.qual
+        cat 454AllContigs.fna > ../all.fna
+        cat 454AllContigs.qual > ../all.qual
 #        cp 454AllContigs.qual ../all/"$d".qual
         cd ..
     fi
 done
-#cd all
-#cat *.fna >assembly.sh-all.fna
-#cat *qual>assembly.sh-all.qual
-cp all.fna ../../"$area"in.fasta
-cp all.qual ../../result.qual
-cd ..
+cp all.fna ../"$area"in.fasta
+cp all.qual ../result.qual
 cd ..
 
 #Makedb
-perl devidedb.pl ../maindb ../list"$area" >assembly.sh-log2
+perl devidedb.pl ../maindb ../list"$area" >devidedb.log
 mv maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
@@ -73,7 +68,7 @@ blastn -db db"$area" -task megablast -use_index false -evalue 1e-05 -max_target_
 rm db*
 
 #Devidefasta
-perl ../devidefasta.pl "$area"in.fasta "$area"Bout>assembly.sh-log3
+perl ../devidefasta.pl "$area"in.fasta "$area"Bout>-log3
 mv "$area"in.fasta_order devide
 
 #Rename
@@ -87,10 +82,10 @@ mv Statis.xls ../
 #Add name info
 for y in `ls`
 do
-    sed -i 's/>assembly.sh-/>'"$y"'-/' $y
+    sed -i 's/>-/>'"$y"'-/' $y
 done
 
-cat *>assembly.sh-../result.fna
+cat *>-../result.fna
 cd ..
 python3 addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
