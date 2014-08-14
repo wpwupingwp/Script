@@ -8,27 +8,22 @@
 area=1
 workdir=/home/zhangxianchun/lichanghao/CT/wp/work/
 four54="$workdir"/454/bin
-#$pldir=$workdir/
 
-echo 'Depend on : maindb primer_list.txt list raw.fasta .pl usearch' 
+echo 'Depend on : maindb addname.py primer.fasta list raw-trim.fastq .pl usearch' 
 #devideraw
 cd $workdir
 mkdir "$area"
-cp "$area".fasta "$area"/
-cp maindb "$area"/
 cp devide* "$area"/
-cp usearch "$area"/
-cp primer_list.txt "$area"/
-cp list"$area" "$area"/
 cd $area
-perl devideraw.pl "$area".fasta primer_list.txt >log1
-mv "$area"_cp_regions assembly
+mkdir assembly
+python3 ../devideraw.py ../"$area".fastq ../primer.fasta
+mv cp* assembly/
 
 #Rename
 cd assembly
 for x in `seq -w 139`
 do
-    ../usearch -cluster_fast cp"$x" -id 1.0 -centroids "$x" --log "$x".log
+    ../../usearch -cluster_fast cp"$x" -id 1.0 -centroids "$x" --log "$x".log
 done
 cat *.log >../usearch.log
 rm *.log
@@ -63,8 +58,7 @@ cd ..
 cd ..
 
 #Makedb
-perl devidedb.pl maindb list"$area" >log2
-rm maindb
+perl devidedb.pl ../maindb ../list"$area" >log2
 mv maindb.Order.Extracted.fas db"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
@@ -92,14 +86,8 @@ done
 
 cat *>../result.fna
 cd ..
-#python addname.py result.fna result.qual
-cd $workdir
-cd $area
-cd assembly
-cd all
-cp all.qual ../../result.qual
-cd ..
-cd ..
+python3 addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
 cp result.qual ../result/"$area".qual
-
+python3 table.py result.fna list"$area"
+cp *.csv ../sum/
