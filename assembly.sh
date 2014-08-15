@@ -1,4 +1,4 @@
-#PBS -N 454work
+#PBS -N assembly-1
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=240:00:00
 #PBS -q batch   
@@ -88,4 +88,4 @@ python3 ../addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
 cp result.qual ../result/"$area".qual
 python3 ../table.py result.fna ../list"$area"
-cp *.csv ../sum/
+mv *.csv ../sum/
