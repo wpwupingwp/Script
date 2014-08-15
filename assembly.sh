@@ -11,7 +11,7 @@ workdir=/tmp/work
 four54=/usr/bin
 #four54="$workdir"/454/bin
 
-echo 'Depend on : result/ sum/ maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl devidedb.pl usearch' 
+echo 'Depend on : result/ sum/ maindb addname.py table.py devideraw.py primer.fasta list raw-trim.fastq devidefasta.pl devidedb.py usearch' 
 #devideraw
 cd $workdir
 mkdir "$area"
@@ -56,8 +56,7 @@ cp all.qual ../result.qual
 cd ..
 
 #Makedb
-perl ../devidedb.pl ../maindb ../list"$area" > devidedb.log
-mv ../maindb.Order.Extracted.fas db"$area"
+python3 ../devidedb.py ../maindb ../list"$area"
 makeblastdb -in db"$area" -dbtype nucl -out db"$area"
 
 #Blast
