@@ -46,7 +46,7 @@ do
         cd $d
         sed -i 's/>/>'"$d"'-/' 454AllContigs.fna
         sed -i 's/ //g' 454AllContigs.fna
-        sed -i 's/ //g' 454AllContigs.qual
+#        sed -i 's/ //g' 454AllContigs.qual
         sed -i 's/>/>'"$d"'-/' 454AllContigs.qual
         cat 454AllContigs.fna >> ../all.fna
         cat 454AllContigs.qual >> ../all.qual
