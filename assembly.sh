@@ -15,6 +15,9 @@ echo 'Depend on : result/ sum/ maindb addname.py table.py devideraw.py primer.fa
 #devideraw
 cd $workdir
 mkdir "$area"
+mkdir result
+mkdir sum
+mkdir result_raw
 #cp devide* "$area"/
 cd $area
 cp ../primer.* ./
@@ -46,7 +49,6 @@ do
         cd $d
         sed -i 's/>/>'"$d"'-/' 454AllContigs.fna
         sed -i 's/ //g' 454AllContigs.fna
-#        sed -i 's/ //g' 454AllContigs.qual
         sed -i 's/>/>'"$d"'-/' 454AllContigs.qual
         cat 454AllContigs.fna >> ../all.fna
         cat 454AllContigs.qual >> ../all.qual
@@ -84,8 +86,11 @@ done
 
 cat * > ../result.fna
 cd ..
-python3 ../addname.py result.fna result.qual
 cp result.fna ../result/"$area".fna
+cp result.fna ../result_raw/"$area".fna
 cp result.qual ../result/"$area".qual
-python3 ../table.py result.fna ../list"$area"
+cp result.qual ../result_raw/"$area".qual
+cd result
+python3 ../addname.py "$area".fna "$area".qual "$area".fastq
+python3 ../table.py "$area".fna ../list"$area"
 mv *.csv ../sum/
