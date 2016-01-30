@@ -5,8 +5,8 @@ cd "$workdir"
 cat info.txt >> info.csv
 mkdir output
 echo "Merge"
-flash left.fastq right.fastq
-python3 join_fq.py out.notCombined_1.fastq out.notCombined_2.fastq
+./flash left.fastq right.fastq
+python3 join_fastq.py out.notCombined_1.fastq out.notCombined_2.fastq
 cat out.extendedFrags.fastq combine.fastq > merged.fastq
 #echo "Clean"
 #perl ./ampliCLEAN.pl -thr 16 -i ./output/merge.fq -d ./info.csv -mqual 20 -o ./output/clean > ./output/clean.log
