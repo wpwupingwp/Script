@@ -1,19 +1,22 @@
 #!/bin/sh
 
-workdir=~/Shaoyao
-cd "$workdir"
-cat info.txt >> info.csv
-mkdir output
+parameter=parameter.txt
+info=info.csv
+left=left.fastq
+right=right.fastq
+output="output"
+thread=16
+
+cat "$parameter" >> "$info"
+mkdir "$output"
+
 echo "Merge"
-./flash left.fastq right.fastq
+./flash "$left" "$right"
 python3 join_fastq.py out.notCombined_1.fastq out.notCombined_2.fastq
 cat out.extendedFrags.fastq combine.fastq > merged.fastq
-#echo "Clean"
-#perl ./ampliCLEAN.pl -thr 16 -i ./output/merge.fq -d ./info.csv -mqual 20 -o ./output/clean > ./output/clean.log
 echo "Check"
-perl ./ampliCHECK.pl -thr 16 -i ./output/combine.fastq -d ./info.csv -t 'Illumina' -o ./output/check > ./output/check.log
+perl ./ampliCHECK.pl -"$thread" 16 -i ./merged.fastq -d "$info" -t 'Illumina' -o "$output"/check > "$output"/check.log
 echo "SAS"
-perl ./ampliSAS.pl -thr 16 -i ./output/combine.fastq -d ./info.csv -t 'Illumina' -o ./output/SAS > ./output/sas.log
+perl ./ampliSAS.pl -"$thread" 16 -i ./merged.fastq -d "$info" -t 'Illumina' -o "$output"/SAS > "$output"/sas.log
 echo "Compare"
-perl ./ampliCOMPARE.pl -1 ./output/check/allseqs/results.xlsx -2
-./output/SAS/allseqs/SAS/results.xlsx -o ./output/compare.xlsx > ./output/compare.log
+perl ./ampliCOMPARE.pl -1 "$output"/check/results.xlsx -2 "$output"/SAS/results.xlsx -o "$output"/compare.xlsx > "$output"/compare.log
