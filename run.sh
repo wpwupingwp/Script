@@ -1,13 +1,14 @@
 #!/bin/sh
 
-info=barcode_primer.csv
-L=left.fastq
-R=right.fastq
+info=info.csv
+L=test-l
+R=test-r
 merge=merged.fastq
 
-output="output"
+output="test"
 thread=8
 parameter=parameter.txt
+workdir=`pwd`
 
 cat "$parameter" "$info" >> info.txt
 mkdir "$output"
@@ -22,3 +23,7 @@ echo "SAS"
 perl ./ampliSAS.pl -thr "$thread" -i "$merge" -d info.txt -t 'Illumina' -o "$output"/SAS > "$output"/sas.log
 echo "Compare"
 perl ./ampliCOMPARE.pl -1 "$output"/check/results.xlsx -2 "$output"/SAS/results.xlsx -o "$output"/compare.xlsx > "$output"/compare.log
+echo "Rename"
+python3 bop.py --path "$workdir"/"$output"/check/allseqs"
+python3 bop.py --path "$workdir"/"$output"/SAS/filtered
+
