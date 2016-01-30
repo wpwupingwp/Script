@@ -7,10 +7,10 @@ merge=merged.fastq
 
 output="test"
 thread=8
-parameter=parameter.txt
+parameter=parameters.txt
 workdir=`pwd`
 
-cat "$parameter" "$info" >> info.txt
+cat "$parameter" "$info" > info.txt
 mkdir "$output"
 
 echo "Merge"
